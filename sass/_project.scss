@@ -1,0 +1,68 @@
+html {
+  font-size : 24px;
+}
+
+body {
+  background-color: #FF9D00;
+}
+
+h1 {
+  font-size: 240px;
+  transform: scale(1, 1.15);
+}
+
+h2 {
+  font-size: 112px;
+}
+
+h3 {
+  font-size: 96px;
+  letter-spacing: -5px;
+  transform: scale(1, 1.18);
+}
+h4, .h4 {
+  font-size: 44px;
+}
+
+h5 {
+  font-size: 30px;
+  transform: scale(1, 1.15);
+}
+
+h1, h2, h3, h4, h5 {
+  line-height: 1;
+}
+
+.custom {
+  &--height {
+    height : 100vh;
+  }
+  &--textShadow {
+    text-shadow: 10px 5px 5px black;
+  }
+  &__operator {
+    position: relative;
+    letter-spacing: -4px;
+    transform: scale(1, 1.15);
+    &::before {
+      position: absolute;  
+      content: "";
+      width: 98%;
+      height: 4px;
+      background-color: #ffffff;
+      bottom: 0;
+      left: 0;
+      transform: translateX(6%);
+    }
+    &::after {
+      position: absolute;  
+      content: "";
+      width: 98%;
+      height: 4px;
+      background-color: #ffffff;
+      bottom: -10px;
+      left: 0;
+      transform: translateX(6%);
+    }
+  }
+}
