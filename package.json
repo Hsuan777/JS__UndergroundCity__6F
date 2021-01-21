@@ -1,0 +1,14 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "project init",
+  "main": "js/all.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vic",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.0.0-beta1"
+  }
+}
