@@ -71,7 +71,6 @@ const game = function(){
     }
   }
   this.timeFormat = (num) => {
-    let newStr = ''
     if ( num < 10 ) {
       return  newStr = `0${num}`
     } else {
