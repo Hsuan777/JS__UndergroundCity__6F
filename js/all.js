@@ -103,7 +103,6 @@ const game = function () {
   };
   /* 渲染題目至畫面 */
   this.render = () => {
-    
     if (isCheat === true) {
       return
     } else {
@@ -141,7 +140,6 @@ const game = function () {
         );
       }
     }
-    
   };
   /* 檢查輸入答案並換題，最後清空輸入欄位 */
   this.inputEnter = (e) => {
