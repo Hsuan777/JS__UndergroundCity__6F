@@ -1,14 +1,14 @@
 html {
-  font-size : 24px;
+  font-size: 24px;
 }
 
 body {
-  background-color: #FF9D00;
+  background-color: #ff9d00;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 
 h1 {
   font-size: 240px;
-  transform: scale(1, 1.15);
 }
 
 h2 {
@@ -17,52 +17,51 @@ h2 {
 
 h3 {
   font-size: 96px;
-  letter-spacing: -5px;
-  transform: scale(1, 1.18);
+  letter-spacing: 0px;
 }
-h4, .h4 {
+h4,
+.h4 {
   font-size: 44px;
 }
 
 h5 {
   font-size: 30px;
-  transform: scale(1, 1.15);
 }
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   line-height: 1;
 }
 
 .custom {
   &--height {
-    height : 100vh;
+    height: 100vh;
   }
   &--textShadow {
     text-shadow: 10px 5px 5px black;
   }
   &__operator {
     position: relative;
-    letter-spacing: -4px;
-    transform: scale(1, 1.15);
     &::before {
-      position: absolute;  
+      position: absolute;
       content: "";
       width: 98%;
-      height: 4px;
+      height: 3px;
       background-color: #ffffff;
       bottom: 0;
       left: 0;
-      transform: translateX(6%);
     }
     &::after {
-      position: absolute;  
+      position: absolute;
       content: "";
       width: 98%;
-      height: 4px;
+      height: 3px;
       background-color: #ffffff;
       bottom: -10px;
       left: 0;
-      transform: translateX(6%);
     }
   }
 }
