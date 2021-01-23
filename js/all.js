@@ -18,8 +18,10 @@ const game = function () {
   let score = 0;
   let questionTemp = [];
   let isCheat = true;
+  let correctTimes = 0
+  let timestampTemp = []
   this.start = () => {
-    if (time > 0 && time < 60) {
+    if ( Date.now() > timestampTemp[0] && Date.now() < timestampTemp[1]) {
       return;
     } else {
       displayMain.classList.add("d-none");
@@ -30,6 +32,8 @@ const game = function () {
       isCheat = false
       scoreNumber.textContent = vm.scoreFormat(score);
       answer.value = "";
+      displayTime.innerHTML = `00 : 00`
+      timestampTemp.push(Date.now(), Date.now() + 60*1000)
       vm.render();
       for (let z = 1; z <= 60; z++) {
         setTimeout(() => {
@@ -150,6 +154,7 @@ const game = function () {
   this.checkAnswer = () => {
     let answerNumber = Number(answer.value);
     if (vm.answerFormat(eval(questionTemp.join(""))) === answerNumber && answer.value !== '') {
+      correctTimes += 1
       if (time <= 40) {
         score += 1;
       } else if (time >= 41 && time <= 59) {
