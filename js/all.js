@@ -31,10 +31,11 @@ const game = function () {
       time = 0;
       score = 0;
       correctTimes = 0;
-      isCheat = false
+      isCheat = false;
       scoreNumber.textContent = vm.scoreFormat(score);
       answer.value = "";
       displayTime.innerHTML = `00 : 00`
+      timestampTemp = []
       timestampTemp.push(Date.now(), Date.now() + 60*1000)
       vm.render();
       for (let z = 1; z <= 60; z++) {
@@ -47,7 +48,7 @@ const game = function () {
             displayQuestion.classList.add("d-none");
             displayResult.classList.remove("d-none");
             finalScore.textContent = score;
-            finalCorrectTimes.textContent = `CorrectTime : ${correctTimes}`
+            finalCorrectTimes.textContent = `CorrectTimes : ${correctTimes}`
           }
         }, 1000 * z);
       }
@@ -61,16 +62,16 @@ const game = function () {
     let operatorIndex = Math.floor(Math.random() * Math.floor(4));
     switch (operatorIndex) {
       case 0:
-        return "+";
+        return ["+", "+"];
         break;
       case 1:
-        return "-";
+        return ["-", "−"];
         break;
       case 2:
-        return "*";
+        return ["*", "×"];
         break;
       case 3:
-        return "/";
+        return ["/", "÷"];
         break;
     }
   };
@@ -102,42 +103,45 @@ const game = function () {
   };
   /* 渲染題目至畫面 */
   this.render = () => {
+    
     if (isCheat === true) {
       return
-    } else if (time <= 20) {
-      firstNumber.textContent = vm.numOutput();
-      secondaryNumber.textContent = vm.numOutput();
-      operator.textContent = vm.operatorOutput();
-      questionTemp.push(
-        firstNumber.textContent,
-        operator.textContent,
-        secondaryNumber.textContent
-      );
-    } else if (time >= 21 && time <= 40) {
-      firstNumber.textContent = `${Number(vm.numOutput() + vm.numOutput())}`;
-      secondaryNumber.textContent = `${Number(
-        vm.numOutput() + vm.numOutput()
-      )}`;
-      operator.textContent = `${vm.operatorOutput()}`;
-      questionTemp.push(
-        firstNumber.textContent,
-        operator.textContent,
-        secondaryNumber.textContent
-      );
-    } else if (time >= 41 && time <= 59) {
-      firstNumber.textContent = `${Number(
-        vm.numOutput() + vm.numOutput() + vm.numOutput()
-      )}`;
-      secondaryNumber.textContent = `${Number(
-        vm.numOutput() + vm.numOutput() + vm.numOutput()
-      )}`;
-      operator.textContent = `${vm.operatorOutput()}`;
-      questionTemp.push(
-        firstNumber.textContent,
-        operator.textContent,
-        secondaryNumber.textContent
-      );
+    } else {
+      let newOperatorOutput = vm.operatorOutput()
+      operator.textContent = newOperatorOutput[1];
+      if (time <= 20) {
+        firstNumber.textContent = vm.numOutput();
+        secondaryNumber.textContent = vm.numOutput();
+        questionTemp.push(
+          firstNumber.textContent,
+          newOperatorOutput[0],
+          secondaryNumber.textContent
+        );
+      } else if (time >= 21 && time <= 40) {
+        firstNumber.textContent = `${Number(vm.numOutput() + vm.numOutput())}`;
+        secondaryNumber.textContent = `${Number(
+          vm.numOutput() + vm.numOutput()
+        )}`;
+        questionTemp.push(
+          firstNumber.textContent,
+          newOperatorOutput[0],
+          secondaryNumber.textContent
+        );
+      } else if (time >= 41 && time <= 59) {
+        firstNumber.textContent = `${Number(
+          vm.numOutput() + vm.numOutput() + vm.numOutput()
+        )}`;
+        secondaryNumber.textContent = `${Number(
+          vm.numOutput() + vm.numOutput() + vm.numOutput()
+        )}`;
+        questionTemp.push(
+          firstNumber.textContent,
+          newOperatorOutput[0],
+          secondaryNumber.textContent
+        );
+      }
     }
+    
   };
   /* 檢查輸入答案並換題，最後清空輸入欄位 */
   this.inputEnter = (e) => {
