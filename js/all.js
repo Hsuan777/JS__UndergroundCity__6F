@@ -12,14 +12,15 @@ const game = function () {
   const displayQuestion = document.querySelector(".js-question");
   const displayResult = document.querySelector(".js-result");
   const finalScore = document.querySelector(".js-finalScore");
+  const finalCorrectTimes = document.querySelector(".js-correctTimes");
 
   const vm = this;
   let time = 0;
   let score = 0;
   let questionTemp = [];
   let isCheat = true;
-  let correctTimes = 0
-  let timestampTemp = []
+  let correctTimes = 0 ;
+  let timestampTemp = [];
   this.start = () => {
     if ( Date.now() > timestampTemp[0] && Date.now() < timestampTemp[1]) {
       return;
@@ -29,6 +30,7 @@ const game = function () {
       displayResult.classList.add("d-none");
       time = 0;
       score = 0;
+      correctTimes = 0;
       isCheat = false
       scoreNumber.textContent = vm.scoreFormat(score);
       answer.value = "";
@@ -45,6 +47,7 @@ const game = function () {
             displayQuestion.classList.add("d-none");
             displayResult.classList.remove("d-none");
             finalScore.textContent = score;
+            finalCorrectTimes.textContent = `CorrectTime : ${correctTimes}`
           }
         }, 1000 * z);
       }
@@ -140,7 +143,7 @@ const game = function () {
   this.inputEnter = (e) => {
     if (
       e.code === "NumpadEnter" ||
-      (e.code === "Enter" && time >= 1 && time <= 59)
+      (e.code === "Enter" && Date.now() > timestampTemp[0] && Date.now() < timestampTemp[1])
     ) {
       isCheat = false
       vm.checkAnswer();
