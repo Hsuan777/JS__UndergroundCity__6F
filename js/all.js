@@ -37,6 +37,7 @@ const game = function () {
       displayTime.innerHTML = `00 : 00`
       timestampTemp = []
       timestampTemp.push(Date.now(), Date.now() + 60*1000)
+      questionTemp = [];
       vm.render();
       for (let z = 1; z <= 60; z++) {
         setTimeout(() => {
