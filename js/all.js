@@ -1,6 +1,7 @@
 const displayStart = document.querySelector(".js-start");
 const answer = document.querySelector(".js-answer");
-const tryAgain = document.querySelector(".js-tryAgain");
+const tryAgainAll = document.querySelectorAll(".js-tryAgain");
+const leaderPage = document.querySelector(".js-leaderPage");
 
 const game = function () {
   const displayTime = document.querySelector(".js-time");
@@ -11,8 +12,13 @@ const game = function () {
   const displayMain = document.querySelector(".js-main");
   const displayQuestion = document.querySelector(".js-question");
   const displayResult = document.querySelector(".js-result");
+  const displayLeaderBoard = document.querySelector(".js-leaderBoard");
   const finalScore = document.querySelector(".js-finalScore");
   const finalCorrectTimes = document.querySelector(".js-correctTimes");
+  const gamerList = document.querySelector(".js-gamerList");
+  const apiGet = "https://spreadsheets.google.com/feeds/list/1B1uS_BDJW9PtwhoLNV95n7B4FSUqLxcRrv8Vms11Y4Y/1/public/values?alt=json"
+  const apiPost = "https://script.google.com/macros/s/AKfycbxBjEDhEnIamuPAyulyynmUUq2fiQ3X64H86kVsd2XU42AtHuwsmw-ThQ/exec"
+
 
   const vm = this;
   let time = 0;
@@ -21,6 +27,12 @@ const game = function () {
   let isCheat = true;
   let correctTimes = 0 ;
   let timestampTemp = [];
+  let gamerData = {
+    name : '',
+    score : 0,
+    correct40 : 0,
+    correct60 : 0,
+  }
   this.start = (e) => {
     if ( Date.now() > timestampTemp[0] && Date.now() < timestampTemp[1]) {
       return;
@@ -28,6 +40,7 @@ const game = function () {
       displayMain.classList.add("d-none");
       displayQuestion.classList.remove("d-none");
       displayResult.classList.add("d-none");
+      displayLeaderBoard.classList.add("d-none");
       time = 0;
       score = 0;
       correctTimes = 0;
@@ -172,8 +185,58 @@ const game = function () {
     scoreNumber.textContent = vm.scoreFormat(score);
     questionTemp = [];
   };
+  this.getData = () => {
+    if (Date.now() > timestampTemp[1]) {
+      displayMain.classList.add("d-none");
+      displayQuestion.classList.add("d-none");
+      displayResult.classList.add("d-none");
+      displayLeaderBoard.classList.remove("d-none");
+      let data = []
+      let str = ''
+      fetch(apiGet).then(response => {
+        return response.json()
+      }).then(response=>{
+        data = response.feed.entry
+        data.sort((a, b)=>{
+          return b.gsx$score.$t - a.gsx$score.$t
+        })
+        data.map((item, index) => {
+          if ( index < 5 ) {
+            str += `<tr>
+              <th scope="row">${index+1}</th>
+              <td>${item.gsx$name.$t}</td>
+              <td class="text-center">${item.gsx$score.$t}</td>
+            </tr>`
+          }
+        })
+        gamerList.innerHTML = str
+      }).catch( () => 'Please Refresh')
+    }
+  };
+  this.postData = () => {
+    fetch(apiPost, {
+      method: 'POST', 
+      mode: 'cors', 
+      body: JSON.stringify(gamerData),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+      },
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json()
+      }
+    })
+    .then(res=>{
+       return res
+    })
+    .catch(() => '404')
+  }
 };
 const newGame = new game();
 displayStart.addEventListener("click", newGame.start);
 answer.addEventListener("keydown", newGame.inputEnter);
-tryAgain.addEventListener("click", newGame.start);
+tryAgainAll.forEach(item => {
+  item.addEventListener("click", newGame.start);
+})
+leaderPage.addEventListener("click", newGame.getData);

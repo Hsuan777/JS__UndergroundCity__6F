@@ -78,7 +78,7 @@
 
   <!-- 結果區 -->
   <section class="js-result container d-none">
-    <div class="custom--height row  align-items-center">
+    <div class="custom--height row align-items-center">
       <div class="col text-center">
         <h5 class="d-inline text-white border border-white border-3 px-2">60 SECONDS CHALLENGE</h5>
         <h4 class="d-flex justify-content-center align-items-center fw-bolder mt-2">
@@ -87,8 +87,36 @@
           <span class="text-white ms-1">-</span>
         </h4>
         <h2 class="js-finalScore fw-bolder text-white">74</h2>
-        <h5 class="js-correctTimes">0</h5>
-        <button class="js-tryAgain btn btn-dark text-primary">TRY AGAIN!</button>
+        <h5 class="js-correctTimes mb-3">CorrectTimes : 0</h5>
+        <input type="button" class="js-tryAgain btn btn-dark text-primary" value="TRY AGAIN!">
+        <input type="button" class="js-leaderPage btn btn-dark text-white ms-2" value="Leaderboard">
+      </div>
+    </div>
+  </section>
+
+  <section class="js-leaderBoard container d-none">
+    <div class="custom--height row">
+      <div class="col-5 mx-auto">
+        <h3 class="text-center fw-bolder mt-3">Leader Board</h3>
+        <table class="table table-borderless">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Name</th>
+              <th scope="col" class="text-center">Score</th>
+            </tr>
+          </thead>
+          <tbody class="js-gamerList">
+            
+          </tbody>
+        </table>
+        <div class="d-flex flex-column algin-items-center">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Your Name">
+            <button type="button" class="btn btn-dark">Record</button>
+          </div>
+          <input type="button" class="js-tryAgain btn btn-dark text-primary" value="TRY AGAIN!">
+        </div>
       </div>
     </div>
   </section>
