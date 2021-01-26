@@ -2,6 +2,8 @@ const displayStart = document.querySelector(".js-start");
 const answer = document.querySelector(".js-answer");
 const tryAgainAll = document.querySelectorAll(".js-tryAgain");
 const leaderPage = document.querySelector(".js-leaderPage");
+const gamerRecord = document.querySelector(".js-gamerRecord");
+const gamerName = document.querySelector(".js-gamerName");
 
 const game = function () {
   const displayTime = document.querySelector(".js-time");
@@ -26,14 +28,17 @@ const game = function () {
   let questionTemp = [];
   let isCheat = true;
   let correctTimes = 0 ;
+  let correct40Times = 0
+  let correct60Times = 0
   let timestampTemp = [];
   let gamerData = {
     name : '',
     score : 0,
     correct40 : 0,
     correct60 : 0,
+    check: ''
   }
-  this.start = (e) => {
+  this.start = () => {
     if ( Date.now() > timestampTemp[0] && Date.now() < timestampTemp[1]) {
       return;
     } else {
@@ -44,6 +49,8 @@ const game = function () {
       time = 0;
       score = 0;
       correctTimes = 0;
+      correct40Times = 0;
+      correct60Times = 0;
       isCheat = false;
       scoreNumber.textContent = vm.scoreFormat(score);
       answer.value = "";
@@ -61,6 +68,8 @@ const game = function () {
             displayTime.innerHTML = `01 : 00`;
             displayQuestion.classList.add("d-none");
             displayResult.classList.remove("d-none");
+            gamerName.classList.remove("d-none");
+            gamerRecord.classList.remove("d-none");
             finalScore.textContent = score;
             finalCorrectTimes.textContent = `CorrectTimes : ${correctTimes}`
           }
@@ -173,8 +182,10 @@ const game = function () {
     if (vm.answerFormat(eval(questionTemp.join(""))) === answerNumber && answer.value !== '') {
       correctTimes += 1
       if (time <= 40) {
+        correct40Times += 1
         score += 1;
       } else if (time >= 41 && time <= 59) {
+        correct60Times += 1
         score += 5;
       }
     } else {
@@ -186,7 +197,7 @@ const game = function () {
     questionTemp = [];
   };
   this.getData = () => {
-    if (Date.now() > timestampTemp[1]) {
+    if (Date.now()) {
       displayMain.classList.add("d-none");
       displayQuestion.classList.add("d-none");
       displayResult.classList.add("d-none");
@@ -194,6 +205,7 @@ const game = function () {
       let data = []
       let str = ''
       fetch(apiGet).then(response => {
+        console.log(response)
         return response.json()
       }).then(response=>{
         data = response.feed.entry
@@ -211,26 +223,39 @@ const game = function () {
         })
         gamerList.innerHTML = str
       }).catch( () => 'Please Refresh')
+      fetch(apiPost).then(response=>{
+        return response.text()
+      }).then(data=> gamerData.check = data)
     }
   };
   this.postData = () => {
-    fetch(apiPost, {
-      method: 'POST', 
-      mode: 'cors', 
-      body: JSON.stringify(gamerData),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-      },
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json()
-      }
-    })
-    .then(res=>{
-       return res
-    })
-    .catch(() => '404')
+    if (Date.now() > timestampTemp[1] && score > 0) {
+      gamerName.classList.add("d-none");
+      gamerRecord.classList.add("d-none");
+      let newRecord = Object.assign({}, gamerData)
+      newRecord.name = gamerName.value
+      newRecord.score = score
+      newRecord.correct40 = correct40Times
+      newRecord.correct60 = correct60Times
+      fetch(apiPost, {
+        method: 'POST', 
+        mode: 'cors', 
+        body: JSON.stringify(newRecord),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        },
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        }
+      })
+      .then(() => {
+          vm.getData();
+          score = 0;
+      })
+      .catch(() => '404')
+    }
   }
 };
 const newGame = new game();
@@ -240,3 +265,4 @@ tryAgainAll.forEach(item => {
   item.addEventListener("click", newGame.start);
 })
 leaderPage.addEventListener("click", newGame.getData);
+gamerRecord.addEventListener("click", newGame.postData);
