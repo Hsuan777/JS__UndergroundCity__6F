@@ -37,7 +37,7 @@ const game = function () {
     correct60 : 0,
     check: ''
   }
-  isUpdate = false
+  let isUpdate = false
   this.start = () => {
     if ( Date.now() > timestampTemp[0] && Date.now() < timestampTemp[1]) {
       return;
