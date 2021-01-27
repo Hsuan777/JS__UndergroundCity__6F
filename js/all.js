@@ -21,7 +21,6 @@ const game = function () {
   const apiGet = "https://spreadsheets.google.com/feeds/list/1B1uS_BDJW9PtwhoLNV95n7B4FSUqLxcRrv8Vms11Y4Y/1/public/values?alt=json"
   const apiPost = "https://script.google.com/macros/s/AKfycbxBjEDhEnIamuPAyulyynmUUq2fiQ3X64H86kVsd2XU42AtHuwsmw-ThQ/exec"
 
-
   const vm = this;
   let time = 0;
   let score = 0;
@@ -38,6 +37,7 @@ const game = function () {
     correct60 : 0,
     check: ''
   }
+  isUpdate = false
   this.start = () => {
     if ( Date.now() > timestampTemp[0] && Date.now() < timestampTemp[1]) {
       return;
@@ -52,6 +52,7 @@ const game = function () {
       correct40Times = 0;
       correct60Times = 0;
       isCheat = false;
+      isUpdate = false;
       scoreNumber.textContent = vm.scoreFormat(score);
       answer.value = "";
       displayTime.innerHTML = `00 : 00`
@@ -196,8 +197,9 @@ const game = function () {
     scoreNumber.textContent = vm.scoreFormat(score);
     questionTemp = [];
   };
+  /* 排行榜資料 */
   this.getData = () => {
-    if (Date.now()) {
+    if (Date.now() > timestampTemp[1]) {
       displayMain.classList.add("d-none");
       displayQuestion.classList.add("d-none");
       displayResult.classList.add("d-none");
@@ -207,7 +209,7 @@ const game = function () {
       fetch(apiGet).then(response => {
         console.log(response)
         return response.json()
-      }).then(response=>{
+      }).then(response => {
         data = response.feed.entry
         data.sort((a, b)=>{
           return b.gsx$score.$t - a.gsx$score.$t
@@ -222,14 +224,16 @@ const game = function () {
           }
         })
         gamerList.innerHTML = str
-      }).catch( () => 'Please Refresh')
+      }).catch( () => alert('Please Refresh'))
       fetch(apiPost).then(response=>{
         return response.text()
-      }).then(data=> gamerData.check = data)
+      }).then( data => {
+        gamerData.check = data
+      })
     }
   };
   this.postData = () => {
-    if (Date.now() > timestampTemp[1] && score > 0) {
+    if (Date.now() > timestampTemp[1] && isUpdate === false) {
       gamerName.classList.add("d-none");
       gamerRecord.classList.add("d-none");
       let newRecord = Object.assign({}, gamerData)
@@ -247,14 +251,21 @@ const game = function () {
       })
       .then(response => {
         if (response.ok) {
-          return response.json()
+          return response.text()
         }
       })
-      .then(() => {
-          vm.getData();
-          score = 0;
+      .then(res => {
+          if (res === 'Success') {
+            vm.getData();
+            score = 0;
+            isUpdate = true
+          } else {
+            displayMain.classList.remove("d-none");
+            displayQuestion.classList.add("d-none");
+            displayResult.classList.add("d-none");
+            displayLeaderBoard.classList.add("d-none");
+          }
       })
-      .catch(() => '404')
     }
   }
 };
